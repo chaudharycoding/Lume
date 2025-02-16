@@ -1,6 +1,10 @@
 import cv2
 from fire_detector import FireDetection
 import numpy as np
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 def read_video(video_path):
     cap = cv2.VideoCapture(video_path)
@@ -59,8 +63,8 @@ from tkinter import messagebox
 from twilio.rest import Client  # Ensure Twilio is imported
 
 # Twilio credentials (replace with your actual credentials)
-TWILIO_ACCOUNT_SID = "AC7b3dfc7a47154cfd2c6a41f5b7e8f34e"
-TWILIO_AUTH_TOKEN = "1f9834e86b001e221f75c0ee7474aa65"
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
 TWILIO_PHONE_NUMBER = "+18886118361"
 EMERGENCY_NUMBER = "+1911"  # Replace with an emergency contact if needed
 
