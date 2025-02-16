@@ -1,0 +1,13 @@
+names:
+- fire
+- smoke
+nc: 2
+roboflow:
+  license: CC BY 4.0
+  project: smoke-qrgmq
+  url: https://universe.roboflow.com/smokedetection-lfdtr/smoke-qrgmq/dataset/2
+  version: 2
+  workspace: smokedetection-lfdtr
+test: ../test/images
+train: ../train/images
+val: ../valid/images

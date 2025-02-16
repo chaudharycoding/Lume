@@ -1,0 +1,73 @@
+\/* Reset Styles */
+body, h2, button, input {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Dashboard Layout */
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 250px;
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background: #34495e;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.sidebar button:hover {
+    background: #1abc9c;
+}
+
+/* Main Content */
+.content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Upload Sections */
+.tab {
+    display: none;
+    text-align: center;
+}
+
+.tab h2 {
+    margin-bottom: 15px;
+}
+
+input[type="file"] {
+    margin-bottom: 15px;
+}
+
+img, video {
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+    margin-top: 10px;
+}

@@ -1,0 +1,1 @@
+from .fire_detection import FireDetection
