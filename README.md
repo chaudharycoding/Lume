@@ -32,3 +32,6 @@ Lume was developed using:
 🔹 **Integration with CCTV cameras** for **continuous wildfire monitoring**.  
 🔹 **Google Maps API integration** to **pinpoint fire locations** and **share them with authorities**.  
 🔹 **Web-based detection system**—users will be able to **upload images/videos** to check for **potential fire threats**.  
+
+## At a Glimpse!
+![Demo](demo.gif)
