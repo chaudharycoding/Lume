@@ -1,6 +1,6 @@
 # Lume 
 
-## 🔥 Inspiration  
+## 🔥 Inspiration
 The **LA Wildfires** have devastated local communities, and with **climate change** driving an unprecedented rise in wildfires worldwide, the impact is catastrophic. Thousands of **lives, homes, and wildlife habitats** have been lost, and wildfires contribute to nearly **one-third of global CO₂ emissions**. **Early detection** is crucial for prevention and effective crisis management. *Lume* aims to provide a **multi-point detection system** to identify **smoke and fires** quickly and alert the authorities in **real-time**.  
 
 ## ⚡ What It Does  
