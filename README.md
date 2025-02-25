@@ -20,7 +20,7 @@ Lume was developed using:
 - **Twillo for API Key Integration** to **automatically contact emergency services** when needed.  
 
 ## 🚧 Challenges We Faced  
-- **False Detections:** The **YOLOv8 model** initially struggled with **accuracy**. We fine-tuned it by preprocessing the dataset using **data augmentation techniques** like **color space transformation**.  
+- **False Detections:** The **YOLOv8 model** initially struggled with **accuracy**. We fine-tuned the by preprocessing the dataset using **data augmentation techniques** like **color space transformation**.  
 - **Dependency Issues:** Installing **Flask dependencies** was challenging due to **Python version incompatibility**, requiring **troubleshooting and version adjustments**.  
 
 ## 📚 What We Learned  
