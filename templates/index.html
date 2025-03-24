@@ -3,14 +3,654 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Video</title>
+    <title>Lume - AI-Powered Wildfire Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --text-color: #e2e8f0;
+            --bg-color: #0f172a;
+            --card-bg: rgba(71, 85, 105, 0.2);
+            --hover-bg: rgba(71, 85, 105, 0.3);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            background: linear-gradient(45deg, #ff6b6b, #4f46e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4f46e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            max-width: 150px;
+            margin: 0 auto;
+        }
+
+        .faq-section {
+            margin: 4rem auto;
+            max-width: 800px;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .faq-item:hover {
+            background: var(--hover-bg);
+            transform: translateY(-2px);
+        }
+
+        .faq-question {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .faq-answer {
+            margin-top: 1.5rem;
+            display: none;
+            color: var(--text-color);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            padding-left: 1rem;
+            border-left: 2px solid rgba(79, 70, 229, 0.4);
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            color: var(--text-color);
+        }
+
+        .feature-item::before {
+            content: '•';
+            color: #4f46e5;
+            font-size: 1.5rem;
+            margin-right: 0.8rem;
+            line-height: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .upload-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-section h2 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .upload-section p {
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .upload-form label {
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .upload-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4f46e5);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: opacity 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .upload-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .videos-container {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .video-container {
+            flex: 1;
+            min-width: 300px;
+            display: none;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .video-title {
+            margin-bottom: 1rem;
+            color: white;
+            font-weight: 500;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 8px;
+            background: black;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .carousel-item h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .carousel-item p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 1rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-control:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .carousel-prev {
+            left: 1rem;
+        }
+
+        .carousel-next {
+            right: 1rem;
+        }
+
+        .powered-by {
+            text-align: center;
+            padding: 4.5rem 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin: 4rem auto 2rem;
+            position: relative;
+            overflow: hidden;
+            max-width: 1000px;
+        }
+
+        .powered-by::before,
+        .powered-by::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent
+            );
+        }
+
+        .powered-by::before {
+            top: 0;
+        }
+
+        .powered-by::after {
+            bottom: 0;
+        }
+
+        .powered-by a {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .powered-by a:hover {
+            transform: scale(1.05);
+        }
+
+        .powered-by img {
+            height: 65px;
+            margin-left: 12px;
+            vertical-align: middle;
+            filter: brightness(1.1);
+        }
+
+        .powered-by-text {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            opacity: 0.95;
+            letter-spacing: 0.5px;
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .success { background: rgba(16, 185, 129, 0.2); }
+        .warning { background: rgba(245, 158, 11, 0.2); }
+        .error { background: rgba(239, 68, 68, 0.2); }
+
+        #loading {
+            text-align: center;
+            display: none;
+            color: var(--text-color);
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload a Video</h1>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <label for="file">Choose video file</label>
-        <input type="file" name="file" id="file" accept="video/mp4, video/mov, video/avi" required>
-        <button type="submit">Upload</button>
+    <div class="container">
+        <div class="hero">
+            <h1>Lume - AI-Powered Wildfire Detection</h1>
+            <p>Inspired by the devastating LA Wildfires and the global rise in climate-driven fire incidents, Lume is your advanced wildfire detection system. Using cutting-edge AI technology, we detect fires early, alert authorities quickly, and help protect communities worldwide.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">1/3</div>
+                    <div class="stat-label">of global CO₂ emissions from wildfires</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Real-time monitoring</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5s</div>
+                    <div class="stat-label">Alert time on detection</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2>Try Our Fire Detection System</h2>
+            <p>Upload a video to test our AI-powered fire detection system. We'll analyze it in real-time and show you the results.</p>
+            
+            <form id="uploadForm" class="upload-form">
+                <label for="file">Upload video for analysis (mp4, mov, avi)</label>
+                <input type="file" name="file" id="file" accept="video/mp4,video/mov,video/avi" required>
+                <button type="submit" class="upload-btn">Analyze Video</button>
     </form>
+            
+            <div id="loading">Processing video... Please wait.</div>
+            <div id="result"></div>
+            
+            <div class="videos-container">
+                <div id="originalVideoContainer" class="video-container">
+                    <div class="video-title">Original Video</div>
+                    <video id="originalVideo" controls></video>
+                </div>
+                <div id="processedVideoContainer" class="video-container">
+                    <div class="video-title">Processed Video with Fire Detection</div>
+                    <video id="processedVideo" controls></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/wildfire1.jpg') }}" alt="LA Wildfire">
+                    <div class="overlay">
+                        <h2>Protecting Communities</h2>
+                        <p>Early detection is crucial in preventing catastrophic wildfire damage</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/wildfire2.jpg') }}" alt="Wildfire Impact">
+                    <div class="overlay">
+                        <h2>Climate Crisis</h2>
+                        <p>Wildfires contribute to one-third of global CO₂ emissions</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ url_for('static', filename='images/wildfire3.jpg') }}" alt="AI Detection">
+                    <div class="overlay">
+                        <h2>AI-Powered Solution</h2>
+                        <p>24/7 monitoring with real-time alerts to emergency services</p>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control carousel-prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-control carousel-next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="faq-section">
+            <div class="faq-item">
+                <div class="faq-question">
+                    How does Lume detect fires?
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Lume uses YOLOv8, a state-of-the-art deep learning model, combined with OpenCV for video processing. Our system analyzes video frames in real-time, detecting both smoke and fire patterns with high accuracy. We've fine-tuned our model using advanced data augmentation techniques to minimize false detections.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    What happens when a fire is detected?
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    When Lume detects a fire for 5 consecutive seconds across multiple video frames, it automatically alerts emergency services through our Twilio integration. The system includes a user confirmation feature - if you decline an alert but fire is still detected, Lume will continue monitoring and prompting to ensure no potential threats are missed.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    What's next for Lume?
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="faq-answer">
+                    We're working on exciting new features including:
+                    <ul class="feature-list">
+                        <li class="feature-item">Integration with CCTV cameras for continuous wildfire monitoring</li>
+                        <li class="feature-item">Google Maps API integration to pinpoint fire locations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="powered-by">
+            <div class="powered-by-text">
+                Powered by
+                <a href="https://www.twilio.com" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ url_for('static', filename='logos/twilio-logo-red.svg') }}" alt="Twilio">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Carousel functionality
+        const carousel = document.querySelector('.carousel-inner');
+        const items = document.querySelectorAll('.carousel-item');
+        const prevBtn = document.querySelector('.carousel-prev');
+        const nextBtn = document.querySelector('.carousel-next');
+        let currentIndex = 0;
+
+        function updateCarousel() {
+            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+            updateCarousel();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % items.length;
+            updateCarousel();
+        });
+
+        // Auto-advance carousel
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % items.length;
+            updateCarousel();
+        }, 5000);
+
+        // FAQ Toggle
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('active');
+                const arrow = item.querySelector('.arrow');
+                arrow.textContent = item.classList.contains('active') ? '▲' : '▼';
+            });
+        });
+
+        // Form Submission
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const fileInput = document.getElementById('file');
+            formData.append('file', fileInput.files[0]);
+            
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const originalVideoContainer = document.getElementById('originalVideoContainer');
+            const processedVideoContainer = document.getElementById('processedVideoContainer');
+            const originalVideo = document.getElementById('originalVideo');
+            const processedVideo = document.getElementById('processedVideo');
+            
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            originalVideoContainer.style.display = 'none';
+            processedVideoContainer.style.display = 'none';
+            originalVideo.src = '';
+            processedVideo.src = '';
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let message = `<p>${data.message}</p>`;
+                    if (data.fire_detected) {
+                        message += '<p><strong>⚠️ Fire detected in the video!</strong></p>';
+                        if (data.emergency_call_status) {
+                            message += '<p>✅ Emergency services have been notified.</p>';
+                        } else {
+                            message += '<p>❌ Failed to contact emergency services.</p>';
+                        }
+                    } else {
+                        message += '<p>✅ No significant fire detected in the video.</p>';
+                    }
+                    
+                    result.innerHTML = message;
+                    result.className = data.fire_detected ? 'warning' : 'success';
+                    result.style.display = 'block';
+                    
+                    if (data.original_video) {
+                        originalVideo.src = data.original_video;
+                        originalVideoContainer.style.display = 'block';
+                    }
+                    
+                    if (data.video_url) {
+                        processedVideo.src = data.video_url;
+                        processedVideoContainer.style.display = 'block';
+                    }
+                } else {
+                    result.innerHTML = `<p>Error: ${data.error}</p>`;
+                    result.className = 'error';
+                    result.style.display = 'block';
+                }
+            } catch (error) {
+                result.innerHTML = `<p>Error: ${error.message}</p>`;
+                result.className = 'error';
+                result.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
