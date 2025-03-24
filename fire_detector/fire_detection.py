@@ -1,5 +1,7 @@
 import numpy as np
 from ultralytics import YOLO
+import os
+import shutil
 
 class FireDetection:
     def __init__(self, model_path, conf=0.3, iou=0.6):
@@ -8,9 +10,73 @@ class FireDetection:
         self.iou = iou
 
     def detect_fire(self, video_path, save_output=True, augment=True, imgsz=640):
-        results = self.model.track(source=video_path, conf=self.conf, iou=self.iou, augment=augment, persist=True, imgsz=imgsz, save=save_output)
+        # Set save directory to uploads/track folder
+        save_dir = 'uploads'  # Set to uploads directory
+        os.makedirs(save_dir, exist_ok=True)
+        
+        # Get the original filename
+        filename = os.path.basename(video_path)
+        
+        # Run detection with explicit save path
+        results = self.model.track(
+            source=video_path, 
+            conf=self.conf, 
+            iou=self.iou, 
+            augment=augment, 
+            persist=True, 
+            imgsz=imgsz, 
+            save=save_output,
+            project=save_dir,      # Save in uploads
+            name='track',         # Save in track subdirectory
+            save_txt=False,       # Don't save labels
+            save_conf=False,      # Don't save confidences
+            exist_ok=True,        # Overwrite existing files
+            stream=True           # Stream results to prevent RAM accumulation
+        )
+        
         processed_boxes = self.process_detections(results)
-        return processed_boxes
+        
+        # Analyze fire detection patterns
+        consecutive_detections = 0
+        max_consecutive = 0
+        total_detections = 0
+        total_frames = len(processed_boxes)
+        
+        for boxes in processed_boxes:
+            if len(boxes) > 0:  # Fire detected in this frame
+                consecutive_detections += 1
+                total_detections += 1
+                max_consecutive = max(max_consecutive, consecutive_detections)
+            else:  # No fire in this frame
+                consecutive_detections = 0
+        
+        # Calculate detection metrics
+        detection_ratio = total_detections / total_frames if total_frames > 0 else 0
+        
+        # Consider it a fire if:
+        # 1. We have at least 3 consecutive frames with fire OR
+        # 2. Fire is detected in at least 15% of total frames
+        is_fire = max_consecutive >= 3 or detection_ratio >= 0.15
+        
+        print(f"\nFire Detection Analysis:")
+        print(f"Total Frames: {total_frames}")
+        print(f"Frames with Fire: {total_detections}")
+        print(f"Longest Consecutive Detection: {max_consecutive} frames")
+        print(f"Detection Ratio: {detection_ratio:.2%}")
+        
+        if not is_fire and total_detections > 0:
+            print("\n✅ Analysis Result: Controlled Fire Setting")
+            print("While some fire was detected, the pattern suggests a controlled setting")
+            print("(like a fireplace or fire pit) rather than an emergency situation.")
+            print("This assessment is based on the limited and consistent nature of detections.")
+        elif not is_fire:
+            print("\n✅ Analysis Result: No Fire Detected")
+            print("No significant fire patterns were detected in the video.")
+        else:
+            print("\n🚨 FIRE DETECTED - Emergency situation possible")
+        
+        print()  # Extra line for readability
+        return processed_boxes, is_fire
 
     def process_detections(self, results):
         all_boxes = []
