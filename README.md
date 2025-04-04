@@ -13,7 +13,7 @@ Lume is an **AI-powered wildfire detection system** that:
 
 ## 🛠️ How We Built It  
 Lume was developed using:  
-- **YOLOv8** for **real-time fire detection**.  
+- **YOLOv8** for **real-time fire detection**.
 - **OpenCV** for **video processing and frame analysis**.  
 - **Flask** to manage the **backend and API integrations**.  
 - **JavaScript, HTML, and CSS** for an **interactive dashboard**.  
