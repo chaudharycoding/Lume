@@ -1,10 +1,16 @@
-# Use Python 3.11 slim image
-FROM python:3.11-slim
+# Use Python 3.11 slim image (Debian Bullseye for better compatibility)
+FROM python:3.11-slim-bullseye
 
-# Install minimal system dependencies for opencv-python-headless
+# Install system dependencies for opencv-python-headless
 RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libgomp1 \
+    libgl1-mesa-glx \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libfontconfig1 \
+    libice6 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -29,6 +35,8 @@ RUN mkdir -p static/uploads
 ENV PYTHONPATH=/app
 ENV FLASK_ENV=production
 ENV PORT=8080
+ENV DISPLAY=:99
+ENV QT_QPA_PLATFORM=offscreen
 
 # Expose the port that Railway expects
 EXPOSE $PORT
