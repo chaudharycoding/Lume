@@ -1,15 +1,17 @@
 # Version control
 .git
 .gitignore
+.github/
 
 # Python
-__pycache__
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 .pytest_cache
 .coverage
+*.egg-info/
 
 # Virtual environments
 venv/
@@ -32,15 +34,29 @@ env/
 ehthumbs.db
 Thumbs.db
 
-# Large files we don't need in container
+# Large files we don't need in container - CRITICAL FOR SIZE
 training/
 runs/
 demo.gif
 *.md
 LICENSE
+README.md
 
-# Development files
+# All uploaded/processed videos - these are HUGE
+uploads/
+input_videos/
+output_videos/
+static/uploads/
+
+# Development and test files
 test_*.py
 simple_call_test.py
 check_call.py
 yolo_inference.py
+
+# Documentation
+*.txt.bak
+*.log
+
+# Exclude one model file (keep only the one we use)
+weights/fire_detection.pt

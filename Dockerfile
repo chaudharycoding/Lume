@@ -13,9 +13,10 @@ WORKDIR /app
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies with optimizations
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --find-links https://download.pytorch.org/whl/cpu/torch_stable.html -r requirements.txt && \
+    pip cache purge
 
 # Copy application code
 COPY . .
