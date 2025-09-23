@@ -524,31 +524,89 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 1rem;
+                padding: 0.75rem;
             }
 
             .hero {
-                padding: 3rem 1rem;
+                padding: 2rem 1rem;
+                margin-bottom: 2rem;
+                margin-top: 60px; /* Account for fixed navbar */
             }
 
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
+                line-height: 1.1;
+                margin-bottom: 1rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+                padding: 0 0.5rem;
             }
 
             .stats {
-                gap: 1.5rem;
+                gap: 1rem;
+                margin: 2rem 0;
+                flex-direction: column;
             }
 
             .stat-item {
-                padding: 1.5rem 2rem;
+                padding: 1.25rem 1.5rem;
+                margin: 0 auto;
+                max-width: 280px;
+                width: 100%;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
             }
 
             .upload-section {
-                padding: 2rem;
+                padding: 1.5rem;
+                margin: 1.5rem auto;
+            }
+
+            .upload-section h2 {
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+            }
+
+            .upload-section p {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+                padding: 0;
+            }
+
+            .upload-form {
+                padding: 1.5rem;
+                gap: 1.25rem;
+            }
+
+            .file-input-label {
+                padding: 1.25rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            .upload-btn {
+                padding: 1.25rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .videos-container {
+                flex-direction: column;
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .video-container {
+                min-width: auto;
+                padding: 1.25rem;
             }
 
             .carousel {
-                height: 400px;
+                height: 350px;
+                margin-bottom: 2rem;
             }
 
             .carousel-item .overlay {
@@ -559,10 +617,18 @@
                     rgba(0,0,0,0.7) 50%,
                     rgba(0,0,0,0.4) 100%
                 );
+                padding: 1.5rem;
             }
 
-            .carousel-item h2,
+            .carousel-item h2 {
+                font-size: 2.2rem;
+                transform: translateY(0);
+                opacity: 1;
+                margin-bottom: 0.75rem;
+            }
+
             .carousel-item p {
+                font-size: 1.1rem;
                 transform: translateY(0);
                 opacity: 1;
             }
@@ -570,18 +636,66 @@
             .carousel-control {
                 opacity: 1;
                 transform: translateY(-50%) scale(1);
-            }
-
-            .powered-by {
-                padding: 3rem 1rem;
-            }
-
-            .powered-by-text {
+                width: 50px;
+                height: 50px;
                 font-size: 1.2rem;
             }
 
+            .carousel-prev {
+                left: 1rem;
+            }
+
+            .carousel-next {
+                right: 1rem;
+            }
+
+            .faq-section {
+                margin: 3rem auto 2rem;
+                padding: 0 0.5rem;
+            }
+
+            .faq-item {
+                padding: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .faq-question {
+                font-size: 1.1rem;
+            }
+
+            .faq-answer {
+                font-size: 1rem;
+                margin-top: 1.25rem;
+                padding-left: 0.75rem;
+            }
+
+            .powered-by {
+                padding: 2.5rem 1rem;
+                margin: 2rem auto 1rem;
+            }
+
+            .powered-by-text {
+                font-size: 1.1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
             .powered-by img {
-                height: 65px;
+                height: 60px;
+            }
+
+            /* Navigation fixes for mobile */
+            .nav-container {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-logo {
+                width: 35px;
+                height: 35px;
+            }
+
+            .brand-text {
+                font-size: 1.3rem;
             }
         }
 
@@ -898,6 +1012,128 @@
         /* Adjust hero margin to account for fixed navbar */
         .hero {
             margin-top: 80px;
+        }
+
+        /* Additional mobile improvements */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .hero {
+                padding: 1.5rem 0.75rem;
+                margin-top: 70px;
+            }
+
+            .hero h1 {
+                font-size: 1.9rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+                padding: 0 0.25rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stats {
+                margin: 1.5rem 0;
+            }
+
+            .stat-item {
+                padding: 1rem 1.25rem;
+                max-width: 260px;
+            }
+
+            .stat-number {
+                font-size: 2.2rem;
+            }
+
+            .stat-label {
+                font-size: 1rem;
+            }
+
+            .upload-section {
+                padding: 1.25rem;
+                margin: 1rem auto;
+            }
+
+            .upload-section h2 {
+                font-size: 1.6rem;
+            }
+
+            .upload-form {
+                padding: 1.25rem;
+            }
+
+            .file-input-label {
+                padding: 1rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .upload-btn {
+                padding: 1rem 1.25rem;
+                font-size: 0.95rem;
+            }
+
+            .carousel {
+                height: 300px;
+            }
+
+            .carousel-item h2 {
+                font-size: 1.8rem;
+            }
+
+            .carousel-item p {
+                font-size: 1rem;
+            }
+
+            .carousel-item .overlay {
+                padding: 1.25rem;
+            }
+
+            .carousel-control {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+
+            .faq-item {
+                padding: 1rem;
+            }
+
+            .faq-question {
+                font-size: 1rem;
+            }
+
+            .faq-answer {
+                font-size: 0.95rem;
+            }
+
+            .nav-container {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .nav-logo {
+                width: 32px;
+                height: 32px;
+            }
+
+            .brand-text {
+                font-size: 1.2rem;
+            }
+
+            .powered-by {
+                padding: 2rem 0.75rem;
+            }
+
+            .powered-by-text {
+                font-size: 1rem;
+            }
+
+            .powered-by img {
+                height: 55px;
+            }
         }
     </style>
 </head>
