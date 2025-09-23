@@ -8,10 +8,25 @@
     <style>
         :root {
             --primary-color: #4f46e5;
+            --secondary-color: #ff6b6b;
             --text-color: #e2e8f0;
             --bg-color: #0f172a;
             --card-bg: rgba(71, 85, 105, 0.2);
             --hover-bg: rgba(71, 85, 105, 0.3);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            --gradient-primary: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            --gradient-overlay: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.2) 0%,
+                rgba(0,0,0,0.4) 50%,
+                rgba(0,0,0,0.8) 100%
+            );
         }
         
         body {
@@ -21,6 +36,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
@@ -33,19 +49,21 @@
             text-align: center;
             padding: 4rem 1rem;
             background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
-            border-radius: 12px;
-            margin-bottom: 2rem;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
         }
 
         .hero h1 {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
-            color: white;
-            background: linear-gradient(45deg, #ff6b6b, #4f46e5);
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
+            font-weight: 800;
         }
 
         .hero p {
@@ -54,6 +72,7 @@
             max-width: 900px;
             margin: 0 auto 3rem;
             line-height: 1.8;
+            opacity: 0.9;
         }
 
         .stats {
@@ -67,20 +86,24 @@
         .stat-item {
             background: var(--card-bg);
             padding: 2rem 3rem;
-            border-radius: 12px;
+            border-radius: 16px;
             text-align: center;
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition-normal);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
         }
 
         .stat-item:hover {
             transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            background: var(--hover-bg);
         }
 
         .stat-number {
             font-size: 3rem;
             font-weight: bold;
-            background: linear-gradient(45deg, #ff6b6b, #4f46e5);
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -92,6 +115,7 @@
             font-size: 1.1rem;
             max-width: 150px;
             margin: 0 auto;
+            opacity: 0.9;
         }
 
         .faq-section {
@@ -167,25 +191,36 @@
 
         .upload-section {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 3rem;
             margin: 2rem auto;
             max-width: 1000px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
         }
 
         .upload-section h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: white;
             margin-bottom: 1.5rem;
             text-align: center;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .upload-section p {
             color: var(--text-color);
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .upload-form {
@@ -194,30 +229,121 @@
             gap: 1.5rem;
             max-width: 600px;
             margin: 0 auto;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
         }
 
         .upload-form label {
             font-size: 1.1rem;
             color: var(--text-color);
-        }
-
-        .upload-btn {
-            background: linear-gradient(45deg, #ff6b6b, #4f46e5);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: opacity 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            opacity: 0.9;
+            display: block;
+            margin-bottom: 0.5rem;
             font-weight: 500;
         }
 
-        .upload-btn:hover {
-            opacity: 0.9;
+        .file-input-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .file-input-label:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary-color);
             transform: translateY(-2px);
+        }
+
+        .file-input-label i {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .file-name {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            text-align: center;
+            display: none;
+        }
+
+        .file-name.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .upload-btn {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition-normal);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: var(--transition-normal);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            opacity: 0.95;
+        }
+
+        .upload-btn:hover::before {
+            left: 100%;
+        }
+
+        .upload-btn i {
+            font-size: 1.2rem;
         }
 
         .videos-container {
@@ -232,22 +358,26 @@
             min-width: 300px;
             display: none;
             background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
         }
 
         .video-title {
             margin-bottom: 1rem;
             color: white;
-            font-weight: 500;
+            font-weight: 600;
             text-align: center;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            opacity: 0.9;
         }
 
         video {
             width: 100%;
             border-radius: 8px;
             background: black;
+            box-shadow: var(--shadow-sm);
         }
 
         .carousel {
@@ -255,96 +385,218 @@
             width: 100%;
             height: 500px;
             overflow: hidden;
-            margin-bottom: 2rem;
-            border-radius: 12px;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
         }
 
         .carousel-inner {
             display: flex;
-            transition: transform 0.5s ease;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             height: 100%;
+            position: relative;
         }
 
         .carousel-item {
             min-width: 100%;
             height: 100%;
             position: relative;
+            transform-origin: center;
+            transition: var(--transition-normal);
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .carousel-item.active {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .carousel-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            filter: brightness(0.9);
+            transition: var(--transition-normal);
+        }
+
+        .carousel-item:hover img {
+            transform: scale(1.05);
         }
 
         .carousel-item .overlay {
             position: absolute;
-            top: 0;
+            bottom: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+            background: linear-gradient(
+                to top,
+                rgba(0,0,0,0.9) 0%,
+                rgba(0,0,0,0.7) 50%,
+                rgba(0,0,0,0.4) 100%
+            );
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: center;
             color: white;
             text-align: center;
             padding: 2rem;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item:hover .overlay {
+            transform: translateY(0);
         }
 
         .carousel-item h2 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 1rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease 0.2s;
+            font-weight: 700;
         }
 
         .carousel-item p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             max-width: 800px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease 0.4s;
+            opacity: 0.9;
+        }
+
+        .carousel-item:hover h2,
+        .carousel-item:hover p {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .carousel-control {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3);
             color: white;
-            padding: 1rem;
+            padding: 1.2rem;
             border: none;
             cursor: pointer;
             font-size: 1.5rem;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s ease;
+            transition: var(--transition-normal);
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transform: translateY(-50%) scale(0.8);
+        }
+
+        .carousel:hover .carousel-control {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
         }
 
         .carousel-control:hover {
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .carousel-prev {
-            left: 1rem;
+            left: 1.5rem;
         }
 
         .carousel-next {
-            right: 1rem;
+            right: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 3rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .stats {
+                gap: 1.5rem;
+            }
+
+            .stat-item {
+                padding: 1.5rem 2rem;
+            }
+
+            .upload-section {
+                padding: 2rem;
+            }
+
+            .carousel {
+                height: 400px;
+            }
+
+            .carousel-item .overlay {
+                transform: translateY(0);
+                background: linear-gradient(
+                    to top,
+                    rgba(0,0,0,0.9) 0%,
+                    rgba(0,0,0,0.7) 50%,
+                    rgba(0,0,0,0.4) 100%
+                );
+            }
+
+            .carousel-item h2,
+            .carousel-item p {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .carousel-control {
+                opacity: 1;
+                transform: translateY(-50%) scale(1);
+            }
+
+            .powered-by {
+                padding: 3rem 1rem;
+            }
+
+            .powered-by-text {
+                font-size: 1.2rem;
+            }
+
+            .powered-by img {
+                height: 65px;
+            }
         }
 
         .powered-by {
             text-align: center;
             padding: 4.5rem 2rem;
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 16px;
             margin: 4rem auto 2rem;
             position: relative;
             overflow: hidden;
             max-width: 1000px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
         }
 
         .powered-by::before,
@@ -381,10 +633,15 @@
         }
 
         .powered-by img {
-            height: 65px;
-            margin-left: 12px;
+            height: 85px;
+            margin-left: 4px;
             vertical-align: middle;
             filter: brightness(1.1);
+            transition: var(--transition-normal);
+        }
+
+        .powered-by img:hover {
+            transform: scale(1.1);
         }
 
         .powered-by-text {
@@ -396,33 +653,276 @@
             gap: 0.75rem;
             opacity: 0.95;
             letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         #result {
             margin-top: 1.5rem;
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 12px;
             display: none;
             text-align: center;
             font-size: 1.1rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease;
         }
 
-        .success { background: rgba(16, 185, 129, 0.2); }
-        .warning { background: rgba(245, 158, 11, 0.2); }
-        .error { background: rgba(239, 68, 68, 0.2); }
+        .success { 
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .warning { 
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .error { 
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
 
         #loading {
             text-align: center;
             display: none;
             color: var(--text-color);
-            margin: 1rem 0;
+            margin: 1.5rem 0;
             font-size: 1.1rem;
+            opacity: 0.9;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        #loading i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 23, 42, 0.98);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            transition: var(--transition-normal);
+        }
+
+        .nav-brand:hover .nav-logo {
+            transform: scale(1.05);
+            border-color: var(--primary-color);
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: var(--card-bg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Mobile Menu Styles */
+        .nav-mobile-toggle {
+            display: none;  /* This will be overridden in media query */
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-normal);
+            position: relative;
+            z-index: 1001;
+        }
+
+        @media (max-width: 768px) {
+            .nav-mobile-toggle {
+                display: flex;  /* Show only on mobile */
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -300px;  /* Start off-screen */
+                width: 300px;
+                height: 100vh;
+                background: rgba(15, 23, 42, 0.98);
+                backdrop-filter: blur(10px);
+                padding: 6rem 2rem 2rem;
+                flex-direction: column;
+                gap: 1.5rem;
+                transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                border-left: 1px solid var(--border-color);
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+            }
+
+            .nav-links.active {
+                right: 0;  /* Slide in from right */
+            }
+
+            .nav-link {
+                width: 100%;
+                text-align: left;
+                padding: 1rem 1.5rem;
+                font-size: 1.2rem;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+            }
+
+            .nav-link:hover {
+                background: var(--hover-bg);
+                transform: translateX(5px);
+            }
+
+            .nav-link.active {
+                background: var(--primary-color);
+                border-color: var(--primary-color);
+            }
+
+            .menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(4px);
+                z-index: 999;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        /* Adjust hero margin to account for fixed navbar */
+        .hero {
+            margin-top: 80px;
         }
     </style>
 </head>
 <body>
+    <div class="menu-overlay"></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="{{ url_for('static', filename='images/wildfire1.jpg') }}" alt="Logo" class="nav-logo">
+                <span class="brand-text">Lume</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#upload" class="nav-link">Upload</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+            <button class="nav-mobile-toggle" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
     <div class="container">
-        <div class="hero">
+        <div class="hero" id="home">
             <h1>Lume - AI-Powered Wildfire Detection</h1>
             <p>Inspired by the devastating LA Wildfires and the global rise in climate-driven fire incidents, Lume is your advanced wildfire detection system. Using cutting-edge AI technology, we detect fires early, alert authorities quickly, and help protect communities worldwide.</p>
             
@@ -442,17 +942,30 @@
             </div>
         </div>
 
-        <div class="upload-section">
+        <div class="upload-section" id="upload">
             <h2>Try Our Fire Detection System</h2>
             <p>Upload a video to test our AI-powered fire detection system. We'll analyze it in real-time and show you the results.</p>
             
             <form id="uploadForm" class="upload-form">
-                <label for="file">Upload video for analysis (mp4, mov, avi)</label>
-                <input type="file" name="file" id="file" accept="video/mp4,video/mov,video/avi" required>
-                <button type="submit" class="upload-btn">Analyze Video</button>
-    </form>
+                <label for="file">Select Video File</label>
+                <div class="file-input-wrapper">
+                    <input type="file" name="file" id="file" accept="video/mp4,video/mov,video/avi" required>
+                    <label for="file" class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Choose Video File
+                    </label>
+                    <div class="file-name"></div>
+                </div>
+                <button type="submit" class="upload-btn">
+                    <i class="fas fa-play"></i>
+                    Analyze Video
+                </button>
+            </form>
             
-            <div id="loading">Processing video... Please wait.</div>
+            <div id="loading">
+                <i class="fas fa-spinner"></i>
+                Processing video... Please wait.
+            </div>
             <div id="result"></div>
             
             <div class="videos-container">
@@ -467,7 +980,7 @@
             </div>
         </div>
 
-        <div class="carousel">
+        <div class="carousel" id="features">
             <div class="carousel-inner">
                 <div class="carousel-item">
                     <img src="{{ url_for('static', filename='images/wildfire1.jpg') }}" alt="LA Wildfire">
@@ -484,22 +997,16 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="{{ url_for('static', filename='images/wildfire3.jpg') }}" alt="AI Detection">
+                    <img src="{{ url_for('static', filename='images/wildfire3..jpg') }}" alt="AI Detection">
                     <div class="overlay">
                         <h2>AI-Powered Solution</h2>
                         <p>24/7 monitoring with real-time alerts to emergency services</p>
                     </div>
                 </div>
             </div>
-            <button class="carousel-control carousel-prev">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="carousel-control carousel-next">
-                <i class="fas fa-chevron-right"></i>
-            </button>
         </div>
 
-        <div class="faq-section">
+        <div class="faq-section" id="about">
             <div class="faq-item">
                 <div class="faq-question">
                     How does Lume detect fires?
@@ -538,8 +1045,8 @@
         <div class="powered-by">
             <div class="powered-by-text">
                 Powered by
-                <a href="https://www.twilio.com" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ url_for('static', filename='logos/twilio-logo-red.svg') }}" alt="Twilio">
+                <a href="https://www.twilio.com" target="_blank">
+                    <img src="{{ url_for('static', filename='logos/twilio.svg') }}" alt="Twilio">
                 </a>
             </div>
         </div>
@@ -549,23 +1056,21 @@
         // Carousel functionality
         const carousel = document.querySelector('.carousel-inner');
         const items = document.querySelectorAll('.carousel-item');
-        const prevBtn = document.querySelector('.carousel-prev');
-        const nextBtn = document.querySelector('.carousel-next');
         let currentIndex = 0;
 
         function updateCarousel() {
+            // Remove active class from all items
+            items.forEach(item => item.classList.remove('active'));
+            
+            // Add active class to current item
+            items[currentIndex].classList.add('active');
+            
+            // Update transform
             carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
         }
 
-        prevBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + items.length) % items.length;
-            updateCarousel();
-        });
-
-        nextBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % items.length;
-            updateCarousel();
-        });
+        // Initialize first item
+        items[0].classList.add('active');
 
         // Auto-advance carousel
         setInterval(() => {
@@ -650,6 +1155,106 @@
             } finally {
                 loading.style.display = 'none';
             }
+        });
+
+        // File name display
+        document.getElementById('file').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            const fileNameDisplay = document.querySelector('.file-name');
+            if (fileName) {
+                fileNameDisplay.textContent = `Selected: ${fileName}`;
+                fileNameDisplay.classList.add('show');
+            } else {
+                fileNameDisplay.classList.remove('show');
+            }
+        });
+
+        // Add smooth scrolling
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').slice(1);
+                const targetSection = document.getElementById(targetId);
+                const navHeight = document.querySelector('.navbar').offsetHeight;
+                
+                window.scrollTo({
+                    top: targetSection.offsetTop - navHeight,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+
+        // Update active link based on scroll position
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('#home, #features, #upload, #about');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const navHeight = document.querySelector('.navbar').offsetHeight;
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - navHeight - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Update navbar background
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu functionality
+        const mobileToggle = document.querySelector('.nav-mobile-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            navLinks.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            mobileToggle.querySelector('i').className = isMenuOpen ? 'fas fa-times' : 'fas fa-bars';
+            document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+        }
+
+        // Toggle menu when clicking the button
+        mobileToggle.addEventListener('click', toggleMenu);
+
+        // Close menu when clicking overlay
+        menuOverlay.addEventListener('click', () => {
+            if (isMenuOpen) toggleMenu();
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (isMenuOpen) toggleMenu();
+            });
+        });
+
+        // Close menu when pressing Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) toggleMenu();
+        });
+
+        // Close menu when resizing window
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && isMenuOpen) toggleMenu();
         });
     </script>
 </body>
