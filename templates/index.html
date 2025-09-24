@@ -1230,22 +1230,10 @@
                     </label>
                     <div class="file-name"></div>
                 </div>
-                
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <button type="submit" class="upload-btn" style="flex: 1; min-width: 200px;">
-                        <i class="fas fa-play"></i>
-                        Analyze Video (Full AI)
-                    </button>
-                    <button type="button" id="demoBtn" class="upload-btn" style="flex: 1; min-width: 200px; background: linear-gradient(45deg, #10B981, #059669);">
-                        <i class="fas fa-bolt"></i>
-                        Quick Demo
-                    </button>
-                </div>
-                
-                <div style="margin-top: 0.75rem; font-size: 0.9rem; opacity: 0.8; text-align: center;">
-                    💡 <strong>Quick Demo:</strong> Instant results for demonstration<br>
-                    🔥 <strong>Full AI:</strong> Complete fire detection analysis (may take 2-3 minutes on cloud)
-                </div>
+                <button type="submit" class="upload-btn">
+                    <i class="fas fa-play"></i>
+                    Analyze Video
+                </button>
             </form>
             
             <div id="loading">
@@ -1391,8 +1379,8 @@
             
             // Check file size on client side
             const fileSizeMB = file.size / (1024 * 1024);
-            if (fileSizeMB > 50) {
-                alert(`File too large: ${fileSizeMB.toFixed(1)}MB. Please upload a video smaller than 50MB.`);
+            if (fileSizeMB > 25) {
+                alert(`File too large: ${fileSizeMB.toFixed(1)}MB. Please upload a video smaller than 25MB for Railway compatibility.`);
                 return;
             }
             
@@ -1426,11 +1414,17 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10 * 60 * 1000); // 10 minute timeout for Railway
                 
+                console.log('🚀 Starting upload to Railway...');
                 const response = await fetch('/upload', {
                     method: 'POST',
                     body: formData,
-                    signal: controller.signal
+                    signal: controller.signal,
+                    // Add headers to help with Railway
+                    headers: {
+                        'Accept': 'application/json',
+                    }
                 });
+                console.log('📡 Response received:', response.status);
                 
                 clearTimeout(timeoutId);
                 
@@ -1483,42 +1477,6 @@
             } finally {
                 loading.style.display = 'none';
             }
-        });
-
-        // Demo Mode Handler
-        document.getElementById('demoBtn').addEventListener('click', function() {
-            const fileInput = document.getElementById('file');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                alert('Please select a video file first!');
-                return;
-            }
-            
-            const loading = document.getElementById('loading');
-            const result = document.getElementById('result');
-            const originalVideoContainer = document.getElementById('originalVideoContainer');
-            const originalVideo = document.getElementById('originalVideo');
-            
-            // Show immediate demo results
-            loading.style.display = 'none';
-            result.innerHTML = `
-                <p>🎬 <strong>Demo Mode Results</strong></p>
-                <p>📁 File: ${file.name} (${(file.size / (1024*1024)).toFixed(1)}MB)</p>
-                <p>🔥 <strong>Simulated Analysis:</strong> Fire detection pattern found in 45% of frames</p>
-                <p>⚠️ <strong>Fire Risk Level:</strong> Moderate - Controlled fire detected</p>
-                <p>🚨 <em>In a real deployment, emergency services would be alerted for uncontrolled fires</em></p>
-                <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
-                    💡 This is a demonstration. Use "Analyze Video (Full AI)" for actual fire detection.
-                </p>
-            `;
-            result.className = 'warning';
-            result.style.display = 'block';
-            
-            // Show original video
-            const videoURL = URL.createObjectURL(file);
-            originalVideo.src = videoURL;
-            originalVideoContainer.style.display = 'block';
         });
 
         // File name display

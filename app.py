@@ -45,8 +45,8 @@ def upload_video():
         file_size = file.tell()
         file.seek(0)  # Reset to beginning
         
-        if file_size > 50 * 1024 * 1024:  # 50MB limit
-            return jsonify({'error': 'File too large. Please upload a video smaller than 50MB.'}), 400
+        if file_size > 25 * 1024 * 1024:  # 25MB limit for Railway stability
+            return jsonify({'error': 'File too large. Please upload a video smaller than 25MB.'}), 400
         
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
