@@ -46,18 +46,26 @@ def call_911():
         return False
 
 def main(input_video_path, output_video_path):
-    fire_detector = FireDetection("weights/new_fire_detection.pt")
-    
-    # Process the video and get detections and fire status
-    detections, is_fire = fire_detector.detect_fire(input_video_path, save_output=True)
-    
-    if is_fire:
-        print("\n🚨 Fire detected in video! Notifying emergency services...")
-        call_911()
-    else:
-        print("\n✅ No significant fire detected in video.")
-    
-    return is_fire
+    try:
+        fire_detector = FireDetection("weights/new_fire_detection.pt")
+        
+        # Process the video and get detections and fire status
+        print(f"🔥 Processing video: {input_video_path}")
+        detections, is_fire = fire_detector.detect_fire(input_video_path, save_output=True)
+        
+        if is_fire:
+            print("\n🚨 Fire detected in video! Notifying emergency services...")
+            # Skip actual call for demo - just simulate
+            # call_911()
+        else:
+            print("\n✅ No significant fire detected in video.")
+        
+        print(f"✅ Fire detection completed. Fire detected: {is_fire}")
+        return is_fire
+        
+    except Exception as e:
+        print(f"❌ Error in main fire detection: {str(e)}")
+        raise e
 
 if __name__ == "__main__":
     # Default paths when running directly

@@ -86,14 +86,17 @@ def upload_video():
                 # Still return success but with original video only
                 video_url = url_for('serve_video', filename=filename)
             
-            return jsonify({
+            response_data = {
                 'success': True,
                 'message': 'Video processed successfully',
                 'fire_detected': fire_detected,
                 'emergency_call_status': fire_detected,  # Only call if fire detected
                 'video_url': video_url,
                 'original_video': url_for('serve_video', filename=filename)
-            })
+            }
+            
+            print(f"🚀 Sending response: {response_data}")
+            return jsonify(response_data)
 
         return jsonify({'error': 'Invalid file type. Only mp4, mov, avi files are allowed.'}), 400
         

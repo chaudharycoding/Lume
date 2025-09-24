@@ -3,6 +3,9 @@ from ultralytics import YOLO
 import os
 import shutil
 
+# Disable YOLO analytics to prevent hanging
+os.environ['YOLO_ANALYTICS'] = 'False'
+
 class FireDetection:
     def __init__(self, model_path, conf=0.3, iou=0.6):
         self.model = YOLO(model_path)
