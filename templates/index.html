@@ -1238,7 +1238,10 @@
             
             <div id="loading">
                 <i class="fas fa-spinner"></i>
-                Processing video... Please wait.
+                <span id="loading-text">Processing video... Please wait. This may take 1-3 minutes for larger videos.</span>
+                <div style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
+                    💡 Tip: Smaller videos (under 10MB) process faster
+                </div>
             </div>
             <div id="result"></div>
             
@@ -1367,9 +1370,24 @@
             
             const formData = new FormData();
             const fileInput = document.getElementById('file');
-            formData.append('file', fileInput.files[0]);
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a video file first!');
+                return;
+            }
+            
+            // Check file size on client side
+            const fileSizeMB = file.size / (1024 * 1024);
+            if (fileSizeMB > 50) {
+                alert(`File too large: ${fileSizeMB.toFixed(1)}MB. Please upload a video smaller than 50MB.`);
+                return;
+            }
+            
+            formData.append('file', file);
             
             const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loading-text');
             const result = document.getElementById('result');
             const originalVideoContainer = document.getElementById('originalVideoContainer');
             const processedVideoContainer = document.getElementById('processedVideoContainer');
@@ -1383,22 +1401,33 @@
             originalVideo.src = '';
             processedVideo.src = '';
             
+            // Update loading text based on file size
+            if (fileSizeMB > 10) {
+                loadingText.textContent = `Processing ${fileSizeMB.toFixed(1)}MB video... This may take 2-4 minutes.`;
+            } else {
+                loadingText.textContent = `Processing ${fileSizeMB.toFixed(1)}MB video... Please wait.`;
+            }
+            
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5 * 60 * 1000); // 5 minute timeout
+                
                 const response = await fetch('/upload', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    signal: controller.signal
                 });
+                
+                clearTimeout(timeoutId);
                 
                 const data = await response.json();
                 
                 if (response.ok) {
                     let message = `<p>${data.message}</p>`;
                     if (data.fire_detected) {
-                        message += '<p><strong>⚠️ Fire detected in the video!</strong></p>';
+                        message += '<p><strong>🚨 Fire detected in the video!</strong></p>';
                         if (data.emergency_call_status) {
-                            message += '<p>✅ Emergency services have been notified.</p>';
-                        } else {
-                            message += '<p>❌ Failed to contact emergency services.</p>';
+                            message += '<p>✅ Emergency services would be notified in a real deployment.</p>';
                         }
                     } else {
                         message += '<p>✅ No significant fire detected in the video.</p>';
@@ -1413,17 +1442,28 @@
                         originalVideoContainer.style.display = 'block';
                     }
                     
-                    if (data.video_url) {
+                    if (data.video_url && data.video_url !== data.original_video) {
                         processedVideo.src = data.video_url;
                         processedVideoContainer.style.display = 'block';
                     }
                 } else {
-                    result.innerHTML = `<p>Error: ${data.error}</p>`;
+                    let errorMsg = data.error || 'Unknown error occurred';
+                    if (data.details) {
+                        errorMsg += `<br><small>${data.details}</small>`;
+                    }
+                    result.innerHTML = `<p>❌ ${errorMsg}</p>`;
                     result.className = 'error';
                     result.style.display = 'block';
                 }
             } catch (error) {
-                result.innerHTML = `<p>Error: ${error.message}</p>`;
+                let errorMessage = 'Network error or timeout';
+                if (error.name === 'AbortError') {
+                    errorMessage = 'Request timed out. Please try with a smaller video file.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Server unavailable. Please try again later.';
+                }
+                
+                result.innerHTML = `<p>❌ ${errorMessage}</p>`;
                 result.className = 'error';
                 result.style.display = 'block';
             } finally {

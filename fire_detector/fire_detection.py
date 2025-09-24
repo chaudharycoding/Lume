@@ -9,7 +9,7 @@ class FireDetection:
         self.conf = conf
         self.iou = iou
 
-    def detect_fire(self, video_path, save_output=True, augment=True, imgsz=640):
+    def detect_fire(self, video_path, save_output=True, augment=False, imgsz=416):
         # Set save directory to uploads/track folder
         save_dir = 'uploads'  # Set to uploads directory
         os.makedirs(save_dir, exist_ok=True)
@@ -17,21 +17,25 @@ class FireDetection:
         # Get the original filename
         filename = os.path.basename(video_path)
         
-        # Run detection with explicit save path
+        print(f"🔥 Processing video: {filename} with optimized settings for cloud deployment")
+        
+        # Run detection with optimized settings for Railway
         results = self.model.track(
             source=video_path, 
             conf=self.conf, 
             iou=self.iou, 
-            augment=augment, 
+            augment=augment,      # Disabled for faster processing
             persist=True, 
-            imgsz=imgsz, 
+            imgsz=imgsz,          # Reduced from 640 to 416 for faster processing
             save=save_output,
             project=save_dir,      # Save in uploads
             name='track',         # Save in track subdirectory
             save_txt=False,       # Don't save labels
             save_conf=False,      # Don't save confidences
             exist_ok=True,        # Overwrite existing files
-            stream=True           # Stream results to prevent RAM accumulation
+            stream=True,          # Stream results to prevent RAM accumulation
+            verbose=False,        # Reduce logging overhead
+            device='cpu'          # Ensure CPU-only processing
         )
         
         processed_boxes = self.process_detections(results)

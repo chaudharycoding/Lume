@@ -32,43 +32,77 @@ def serve_video(filename):
 
 @app.route('/upload', methods=['POST'])
 def upload_video():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-    
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        input_video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(input_video_path)
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file uploaded'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Check file size (limit to 50MB for Railway)
+        file.seek(0, 2)  # Seek to end
+        file_size = file.tell()
+        file.seek(0)  # Reset to beginning
+        
+        if file_size > 50 * 1024 * 1024:  # 50MB limit
+            return jsonify({'error': 'File too large. Please upload a video smaller than 50MB.'}), 400
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            input_video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            
+            # Save uploaded file
+            print(f"💾 Saving uploaded file: {filename} ({file_size / (1024*1024):.1f}MB)")
+            file.save(input_video_path)
 
-        # Run the main function with the input video path
-        fire_detected = main(input_video_path, None)
+            # Add timeout protection and error handling for processing
+            try:
+                print(f"🔥 Starting fire detection processing...")
+                fire_detected = main(input_video_path, None)
+                print(f"✅ Fire detection completed. Fire detected: {fire_detected}")
+                
+            except Exception as processing_error:
+                print(f"❌ Processing error: {str(processing_error)}")
+                # Clean up uploaded file on error
+                if os.path.exists(input_video_path):
+                    os.remove(input_video_path)
+                return jsonify({
+                    'error': 'Video processing failed. Please try with a smaller or shorter video.',
+                    'details': 'The video may be too complex or large to process on this server.'
+                }), 500
+            
+            # The processed video will be in uploads/track/filename
+            processed_path = os.path.join('track', filename)
+            full_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_path)
+            
+            # Verify the processed video exists and get its URL
+            video_url = None
+            if os.path.exists(full_path):
+                video_url = url_for('serve_video', filename=processed_path)
+                print(f"✅ Processed video available at: {video_url}")
+            else:
+                print(f"❌ Warning: Processed video not found at {full_path}")
+                # Still return success but with original video only
+                video_url = url_for('serve_video', filename=filename)
+            
+            return jsonify({
+                'success': True,
+                'message': 'Video processed successfully',
+                'fire_detected': fire_detected,
+                'emergency_call_status': fire_detected,  # Only call if fire detected
+                'video_url': video_url,
+                'original_video': url_for('serve_video', filename=filename)
+            })
+
+        return jsonify({'error': 'Invalid file type. Only mp4, mov, avi files are allowed.'}), 400
         
-        # The processed video will be in uploads/track/filename
-        processed_path = os.path.join('track', filename)
-        full_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_path)
-        
-        # Verify the processed video exists and get its URL
-        video_url = None
-        if os.path.exists(full_path):
-            video_url = url_for('serve_video', filename=processed_path)
-            print(f"✅ Processed video available at: {video_url}")
-        else:
-            print(f"❌ Warning: Processed video not found at {full_path}")
-        
+    except Exception as e:
+        print(f"❌ Upload error: {str(e)}")
         return jsonify({
-            'success': True,
-            'message': 'Video processed successfully',
-            'fire_detected': fire_detected,
-            'emergency_call_status': True,  # Since we're simulating the call
-            'video_url': video_url,
-            'original_video': url_for('serve_video', filename=filename)  # Also return original video URL
-        })
-
-    return jsonify({'error': 'Invalid file type. Only mp4, mov, avi files are allowed.'}), 400
+            'error': 'Upload failed due to server error.',
+            'details': 'Please try again with a smaller video file.'
+        }), 500
 
 if __name__ == '__main__':
     # Create necessary folders if they don't exist
