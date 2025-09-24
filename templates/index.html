@@ -525,12 +525,16 @@
         @media (max-width: 768px) {
             .container {
                 padding: 0.75rem;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .hero {
-                padding: 2rem 1rem;
+                padding: 2rem 0.75rem;
                 margin-bottom: 2rem;
-                margin-top: 60px; /* Account for fixed navbar */
+                margin-top: 80px; /* Account for fixed navbar */
+                box-sizing: border-box;
+                width: 100%;
             }
 
             .hero h1 {
@@ -563,24 +567,33 @@
             }
 
             .upload-section {
-                padding: 1.5rem;
-                margin: 1.5rem auto;
+                padding: 1.5rem 0.75rem;
+                margin: 1.5rem 0;
+                box-sizing: border-box;
+                width: 100%;
             }
 
             .upload-section h2 {
                 font-size: 1.8rem;
                 margin-bottom: 1rem;
+                text-align: center;
+                padding: 0 0.5rem;
+                word-wrap: break-word;
             }
 
             .upload-section p {
                 font-size: 1rem;
                 margin-bottom: 2rem;
-                padding: 0;
+                padding: 0 0.5rem;
+                text-align: center;
+                line-height: 1.6;
             }
 
             .upload-form {
-                padding: 1.5rem;
+                padding: 1.5rem 1rem;
                 gap: 1.25rem;
+                box-sizing: border-box;
+                width: 100%;
             }
 
             .file-input-label {
@@ -948,18 +961,20 @@
             .nav-links {
                 position: fixed;
                 top: 0;
-                right: -300px;  /* Start off-screen */
-                width: 300px;
+                right: -100%;  /* Start off-screen */
+                width: 280px;
+                max-width: 85vw;
                 height: 100vh;
                 background: rgba(15, 23, 42, 0.98);
                 backdrop-filter: blur(10px);
-                padding: 6rem 2rem 2rem;
+                padding: 5rem 1.5rem 2rem;
                 flex-direction: column;
                 gap: 1.5rem;
                 transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 border-left: 1px solid var(--border-color);
                 box-shadow: var(--shadow-lg);
                 z-index: 1000;
+                box-sizing: border-box;
             }
 
             .nav-links.active {
@@ -1014,15 +1029,29 @@
             margin-top: 80px;
         }
 
+        /* Fix mobile viewport and prevent horizontal scrolling */
+        body {
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
         /* Additional mobile improvements */
         @media (max-width: 480px) {
             .container {
                 padding: 0.5rem;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .hero {
-                padding: 1.5rem 0.75rem;
-                margin-top: 70px;
+                padding: 1.5rem 0.5rem;
+                margin-top: 75px;
+                box-sizing: border-box;
+                width: 100%;
             }
 
             .hero h1 {
@@ -1054,16 +1083,25 @@
             }
 
             .upload-section {
-                padding: 1.25rem;
-                margin: 1rem auto;
+                padding: 1.25rem 0.5rem;
+                margin: 1rem 0;
+                box-sizing: border-box;
+                width: 100%;
             }
 
             .upload-section h2 {
                 font-size: 1.6rem;
+                padding: 0 0.25rem;
+            }
+
+            .upload-section p {
+                padding: 0 0.25rem;
             }
 
             .upload-form {
-                padding: 1.25rem;
+                padding: 1.25rem 0.75rem;
+                box-sizing: border-box;
+                width: 100%;
             }
 
             .file-input-label {
