@@ -1403,14 +1403,16 @@
             
             // Update loading text based on file size
             if (fileSizeMB > 10) {
-                loadingText.textContent = `Processing ${fileSizeMB.toFixed(1)}MB video... This may take 2-4 minutes.`;
+                loadingText.textContent = `Processing ${fileSizeMB.toFixed(1)}MB video... This may take 3-6 minutes on cloud servers.`;
+            } else if (fileSizeMB > 5) {
+                loadingText.textContent = `Processing ${fileSizeMB.toFixed(1)}MB video... This may take 2-4 minutes on cloud servers.`;
             } else {
-                loadingText.textContent = `Processing ${fileSizeMB.toFixed(1)}MB video... Please wait.`;
+                loadingText.textContent = `Processing ${fileSizeMB.toFixed(1)}MB video... Please wait 1-2 minutes.`;
             }
             
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5 * 60 * 1000); // 5 minute timeout
+                const timeoutId = setTimeout(() => controller.abort(), 10 * 60 * 1000); // 10 minute timeout for Railway
                 
                 const response = await fetch('/upload', {
                     method: 'POST',

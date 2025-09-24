@@ -12,7 +12,7 @@ class FireDetection:
         self.conf = conf
         self.iou = iou
 
-    def detect_fire(self, video_path, save_output=True, augment=False, imgsz=416):
+    def detect_fire(self, video_path, save_output=True, augment=False, imgsz=320):
         # Set save directory to uploads/track folder
         save_dir = 'uploads'  # Set to uploads directory
         os.makedirs(save_dir, exist_ok=True)
@@ -29,7 +29,7 @@ class FireDetection:
             iou=self.iou, 
             augment=augment,      # Disabled for faster processing
             persist=True, 
-            imgsz=imgsz,          # Reduced from 640 to 416 for faster processing
+            imgsz=imgsz,          # Reduced to 320 for faster processing
             save=save_output,
             project=save_dir,      # Save in uploads
             name='track',         # Save in track subdirectory
@@ -38,7 +38,9 @@ class FireDetection:
             exist_ok=True,        # Overwrite existing files
             stream=True,          # Stream results to prevent RAM accumulation
             verbose=False,        # Reduce logging overhead
-            device='cpu'          # Ensure CPU-only processing
+            device='cpu',         # Ensure CPU-only processing
+            half=False,           # Disable half precision for stability
+            max_det=100           # Limit maximum detections for speed
         )
         
         processed_boxes = self.process_detections(results)
