@@ -1234,6 +1234,16 @@
                     <i class="fas fa-play"></i>
                     Analyze Video
                 </button>
+                
+                <!-- Railway Test Buttons -->
+                <button type="button" class="upload-btn" onclick="testRailway()" style="margin-top: 1rem; background: linear-gradient(45deg, #10b981, #3b82f6);">
+                    <i class="fas fa-satellite-dish"></i>
+                    Test Railway GET
+                </button>
+                <button type="button" class="upload-btn" onclick="testRailwayPOST()" style="margin-top: 0.5rem; background: linear-gradient(45deg, #f59e0b, #ef4444);">
+                    <i class="fas fa-upload"></i>
+                    Test Railway POST
+                </button>
             </form>
             
             <div id="loading">
@@ -1578,6 +1588,64 @@
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768 && isMenuOpen) toggleMenu();
         });
+
+        // Railway connectivity test function
+        async function testRailway() {
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.className = 'success';
+            result.innerHTML = '<p>🔄 Testing Railway connection...</p>';
+            
+            try {
+                const response = await fetch('/test');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `<p>✅ Railway backend is connected!</p><p><small>Response: ${data.status}</small></p>`;
+                    result.className = 'success';
+                } else {
+                    result.innerHTML = `<p>❌ Railway backend error: ${response.status}</p>`;
+                    result.className = 'error';
+                }
+            } catch (error) {
+                result.innerHTML = `<p>❌ Network error: ${error.message}</p><p><small>This indicates a connection problem to Railway.</small></p>`;
+                result.className = 'error';
+            }
+        }
+
+        // Test Railway POST requests
+        async function testRailwayPOST() {
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.className = 'success';
+            result.innerHTML = '<p>🔄 Testing Railway POST request...</p>';
+            
+            try {
+                const response = await fetch('/test-upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        test: 'Railway POST test',
+                        timestamp: Date.now()
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `<p>✅ Railway POST request successful!</p><p><small>Response: ${data.status}</small></p>`;
+                    result.className = 'success';
+                } else {
+                    result.innerHTML = `<p>❌ Railway POST error: ${response.status}</p>`;
+                    result.className = 'error';
+                }
+            } catch (error) {
+                result.innerHTML = `<p>❌ POST Network error: ${error.message}</p><p><small>POST requests are failing to reach Railway.</small></p>`;
+                result.className = 'error';
+            }
+        }
     </script>
 </body>
 </html>

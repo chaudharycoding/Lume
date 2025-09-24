@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
 import os
+import time
 from werkzeug.utils import secure_filename
 from main import main, call_911
 
@@ -29,6 +30,23 @@ def serve_video(filename):
         return send_from_directory('uploads', filename)
     # For original uploaded videos
     return send_from_directory('uploads', filename)
+
+@app.route('/test', methods=['GET'])
+def test_endpoint():
+    """Simple test endpoint to verify Railway connectivity"""
+    return jsonify({'status': 'Railway backend is working!', 'timestamp': str(time.time())})
+
+@app.route('/test-upload', methods=['POST'])
+def test_upload():
+    """Test POST requests without files"""
+    print(f"🧪 Test upload request received at {time.time()}")
+    data = request.get_json() if request.is_json else request.form.to_dict()
+    print(f"🧪 Request data: {data}")
+    return jsonify({
+        'status': 'POST request successful!', 
+        'received_data': data,
+        'timestamp': str(time.time())
+    })
 
 @app.route('/upload', methods=['POST'])
 def upload_video():
