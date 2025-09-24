@@ -15,6 +15,8 @@ Lume is an **AI-powered wildfire monitoring system** that:
 - ✅ Features a **user confirmation system**—if the user dismisses the alert but the fire persists, the system continues prompting until resolved.  
 - ✅ Includes an **interactive dashboard** (Flask + JS + HTML + CSS) for **real-time monitoring and alerts**.  
 
+👉 **Try it live here:** [Lume Deployment](https://lume-production-9f0a.up.railway.app/)  
+
 ---
 
 ## 🛠️ How We Built It  
