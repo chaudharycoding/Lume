@@ -27,6 +27,9 @@ def process_video_background(job_id, input_video_path, filename):
     """Background task to process video with YOLO"""
     try:
         print(f"🔥 Starting background processing for job {job_id}")
+        print(f"🔥 Video path: {input_video_path}")
+        print(f"🔥 File exists: {os.path.exists(input_video_path)}")
+        
         processing_status[job_id] = {
             'status': 'processing',
             'message': 'Running fire detection...',
@@ -34,8 +37,23 @@ def process_video_background(job_id, input_video_path, filename):
             'start_time': time.time()
         }
         
-        # Run fire detection
-        fire_detected = main(input_video_path, None)
+        # Run fire detection with timeout protection
+        print(f"🔥 Calling main() function...")
+        
+        # Add a processing timeout (8 minutes max)
+        import signal
+        
+        def timeout_handler(signum, frame):
+            raise TimeoutError("Processing timed out after 8 minutes")
+        
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(480)  # 8 minutes
+        
+        try:
+            fire_detected = main(input_video_path, None)
+            print(f"🔥 main() completed, fire detected: {fire_detected}")
+        finally:
+            signal.alarm(0)  # Cancel the alarm
         
         # Check if processed video exists
         processed_path = os.path.join('track', filename)
@@ -109,8 +127,20 @@ def check_status(job_id):
     # Add elapsed time for processing jobs
     if status.get('status') == 'processing' and 'start_time' in status:
         status['elapsed_time'] = time.time() - status['start_time']
+        print(f"🔍 Status check for {job_id}: {status['status']}, elapsed: {status['elapsed_time']:.1f}s")
     
     return jsonify(status)
+
+@app.route('/debug/jobs', methods=['GET'])
+def debug_jobs():
+    """Debug endpoint to see all processing jobs"""
+    debug_info = {}
+    for job_id, status in processing_status.items():
+        debug_status = status.copy()
+        if 'start_time' in status:
+            debug_status['elapsed_time'] = time.time() - status['start_time']
+        debug_info[job_id] = debug_status
+    return jsonify(debug_info)
 
 @app.route('/upload', methods=['POST'])
 def upload_video():
