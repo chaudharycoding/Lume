@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory, url_for
 import os
 import time
+import threading
+import json
 from werkzeug.utils import secure_filename
 from main import main, call_911
 
@@ -15,8 +17,56 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['PROCESSED_FOLDER'] = PROCESSED_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # Limit file size to 100 MB
 
+# Global storage for processing status
+processing_status = {}
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def process_video_background(job_id, input_video_path, filename):
+    """Background task to process video with YOLO"""
+    try:
+        print(f"🔥 Starting background processing for job {job_id}")
+        processing_status[job_id] = {
+            'status': 'processing',
+            'message': 'Running fire detection...',
+            'progress': 0,
+            'start_time': time.time()
+        }
+        
+        # Run fire detection
+        fire_detected = main(input_video_path, None)
+        
+        # Check if processed video exists
+        processed_path = os.path.join('track', filename)
+        full_processed_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_path)
+        
+        video_url = None
+        if os.path.exists(full_processed_path):
+            video_url = url_for('serve_video', filename=processed_path)
+        else:
+            video_url = url_for('serve_video', filename=filename)
+        
+        # Update status to completed
+        processing_status[job_id] = {
+            'status': 'completed',
+            'message': 'Video processed successfully',
+            'fire_detected': fire_detected,
+            'emergency_call_status': fire_detected,
+            'video_url': video_url,
+            'original_video': url_for('serve_video', filename=filename),
+            'processing_time': time.time() - processing_status[job_id]['start_time']
+        }
+        
+        print(f"✅ Background processing completed for job {job_id}")
+        
+    except Exception as e:
+        print(f"❌ Background processing failed for job {job_id}: {str(e)}")
+        processing_status[job_id] = {
+            'status': 'error',
+            'message': 'Video processing failed',
+            'error': str(e)
+        }
 
 @app.route('/')
 def index():
@@ -47,6 +97,20 @@ def test_upload():
         'received_data': data,
         'timestamp': str(time.time())
     })
+
+@app.route('/status/<job_id>', methods=['GET'])
+def check_status(job_id):
+    """Check processing status of a video"""
+    if job_id not in processing_status:
+        return jsonify({'error': 'Job not found'}), 404
+    
+    status = processing_status[job_id].copy()
+    
+    # Add elapsed time for processing jobs
+    if status.get('status') == 'processing' and 'start_time' in status:
+        status['elapsed_time'] = time.time() - status['start_time']
+    
+    return jsonify(status)
 
 @app.route('/upload', methods=['POST'])
 def upload_video():
@@ -97,46 +161,38 @@ def upload_video():
             print(f"💾 Saving uploaded file: {filename} ({file_size / (1024*1024):.1f}MB)")
             file.save(input_video_path)
 
-            # Add timeout protection and error handling for processing
-            try:
-                print(f"🔥 Starting fire detection processing...")
-                fire_detected = main(input_video_path, None)
-                print(f"✅ Fire detection completed. Fire detected: {fire_detected}")
-                
-            except Exception as processing_error:
-                print(f"❌ Processing error: {str(processing_error)}")
-                # Clean up uploaded file on error
-                if os.path.exists(input_video_path):
-                    os.remove(input_video_path)
-                return jsonify({
-                    'error': 'Video processing failed. Please try with a smaller or shorter video.',
-                    'details': 'The video may be too complex or large to process on this server.'
-                }), 500
+            # Generate unique job ID
+            job_id = f"{int(time.time())}_{filename.replace('.', '_')}"
             
-            # The processed video will be in uploads/track/filename
-            processed_path = os.path.join('track', filename)
-            full_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_path)
-            
-            # Verify the processed video exists and get its URL
-            video_url = None
-            if os.path.exists(full_path):
-                video_url = url_for('serve_video', filename=processed_path)
-                print(f"✅ Processed video available at: {video_url}")
-            else:
-                print(f"❌ Warning: Processed video not found at {full_path}")
-                # Still return success but with original video only
-                video_url = url_for('serve_video', filename=filename)
-            
-            response_data = {
-                'success': True,
-                'message': 'Video processed successfully',
-                'fire_detected': fire_detected,
-                'emergency_call_status': fire_detected,  # Only call if fire detected
-                'video_url': video_url,
-                'original_video': url_for('serve_video', filename=filename)
+            # Initialize processing status
+            processing_status[job_id] = {
+                'status': 'uploaded',
+                'message': 'Video uploaded successfully, starting processing...',
+                'filename': filename,
+                'original_video': url_for('serve_video', filename=filename),
+                'upload_time': time.time()
             }
             
-            print(f"🚀 Sending response: {response_data}")
+            # Start background processing
+            print(f"🚀 Starting background processing for job: {job_id}")
+            thread = threading.Thread(
+                target=process_video_background, 
+                args=(job_id, input_video_path, filename)
+            )
+            thread.daemon = True
+            thread.start()
+            
+            # Return immediately with job ID for status checking
+            response_data = {
+                'success': True,
+                'message': 'Video uploaded successfully! Processing in background...',
+                'job_id': job_id,
+                'status_url': url_for('check_status', job_id=job_id),
+                'original_video': url_for('serve_video', filename=filename),
+                'estimated_time': '2-5 minutes'
+            }
+            
+            print(f"🚀 Sending immediate response: {response_data}")
             return jsonify(response_data)
 
         return jsonify({'error': 'Invalid file type. Only mp4, mov, avi files are allowed.'}), 400

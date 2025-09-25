@@ -1444,20 +1444,40 @@
                 
                 const data = await response.json();
                 
-                if (response.ok) {
+                if (response.ok && data.job_id) {
+                    // New async processing mode
+                    result.innerHTML = `<p>${data.message}</p><p><small>Estimated time: ${data.estimated_time}</small></p>`;
+                    result.className = 'success';
+                    result.style.display = 'block';
+                    
+                    // Show original video immediately
+                    if (data.original_video) {
+                        originalVideo.src = data.original_video;
+                        originalVideoContainer.style.display = 'block';
+                    }
+                    
+                    // Start polling for status
+                    loadingText.textContent = 'Processing video in background... Please wait.';
+                    pollJobStatus(data.job_id, loadingText, result, processedVideo, processedVideoContainer);
+                    
+                } else if (response.ok) {
+                    // Legacy synchronous response (for test files)
                     let message = `<p>${data.message}</p>`;
-                    if (data.fire_detected) {
-                        message += '<p><strong>🚨 Fire detected in the video!</strong></p>';
-                        if (data.emergency_call_status) {
-                            message += '<p>✅ Emergency services would be notified in a real deployment.</p>';
+                    if (data.fire_detected !== undefined) {
+                        if (data.fire_detected) {
+                            message += '<p><strong>🚨 Fire detected in the video!</strong></p>';
+                            if (data.emergency_call_status) {
+                                message += '<p>✅ Emergency services would be notified in a real deployment.</p>';
+                            }
+                        } else {
+                            message += '<p>✅ No significant fire detected in the video.</p>';
                         }
-                    } else {
-                        message += '<p>✅ No significant fire detected in the video.</p>';
                     }
                     
                     result.innerHTML = message;
                     result.className = data.fire_detected ? 'warning' : 'success';
                     result.style.display = 'block';
+                    loading.style.display = 'none';
                     
                     if (data.original_video) {
                         originalVideo.src = data.original_video;
@@ -1476,6 +1496,7 @@
                     result.innerHTML = `<p>❌ ${errorMsg}</p>`;
                     result.className = 'error';
                     result.style.display = 'block';
+                    loading.style.display = 'none';
                 }
             } catch (error) {
                 let errorMessage = 'Network error or timeout';
@@ -1489,9 +1510,81 @@
                 result.className = 'error';
                 result.style.display = 'block';
             } finally {
-                loading.style.display = 'none';
+                // Only hide loading if not in async mode
+                if (!loadingText.textContent.includes('background')) {
+                    loading.style.display = 'none';
+                }
             }
         });
+
+        // Function to poll job status
+        async function pollJobStatus(jobId, loadingText, result, processedVideo, processedVideoContainer) {
+            const maxPolls = 120; // 10 minutes max (5 sec intervals)
+            let pollCount = 0;
+            
+            const poll = async () => {
+                try {
+                    const response = await fetch(`/status/${jobId}`);
+                    const status = await response.json();
+                    
+                    if (response.ok) {
+                        if (status.status === 'processing') {
+                            pollCount++;
+                            const elapsed = Math.floor(status.elapsed_time || 0);
+                            loadingText.textContent = `Processing video... ${Math.floor(elapsed / 60)}:${(elapsed % 60).toString().padStart(2, '0')} elapsed`;
+                            
+                            if (pollCount < maxPolls) {
+                                setTimeout(poll, 5000); // Poll every 5 seconds
+                            } else {
+                                result.innerHTML = '<p>❌ Processing timed out. Please try a smaller video.</p>';
+                                result.className = 'error';
+                                loading.style.display = 'none';
+                            }
+                        } else if (status.status === 'completed') {
+                            // Processing completed successfully
+                            let message = `<p>${status.message}</p>`;
+                            if (status.fire_detected) {
+                                message += '<p><strong>🚨 Fire detected in the video!</strong></p>';
+                                if (status.emergency_call_status) {
+                                    message += '<p>✅ Emergency services would be notified in a real deployment.</p>';
+                                }
+                            } else {
+                                message += '<p>✅ No significant fire detected in the video.</p>';
+                            }
+                            
+                            const processingTime = Math.floor(status.processing_time || 0);
+                            message += `<p><small>Processing completed in ${Math.floor(processingTime / 60)}:${(processingTime % 60).toString().padStart(2, '0')}</small></p>`;
+                            
+                            result.innerHTML = message;
+                            result.className = status.fire_detected ? 'warning' : 'success';
+                            loading.style.display = 'none';
+                            
+                            // Show processed video if available
+                            if (status.video_url && status.video_url !== status.original_video) {
+                                processedVideo.src = status.video_url;
+                                processedVideoContainer.style.display = 'block';
+                            }
+                        } else if (status.status === 'error') {
+                            result.innerHTML = `<p>❌ ${status.message}</p><p><small>${status.error || 'Unknown processing error'}</small></p>`;
+                            result.className = 'error';
+                            loading.style.display = 'none';
+                        }
+                    } else {
+                        result.innerHTML = '<p>❌ Failed to check processing status.</p>';
+                        result.className = 'error';
+                        loading.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Status polling error:', error);
+                    result.innerHTML = '<p>❌ Failed to check processing status.</p>';
+                    result.className = 'error';
+                    loading.style.display = 'none';
+                }
+            };
+            
+            // Start polling after a short delay
+            setTimeout(poll, 2000);
+        }
 
         // File name display
         document.getElementById('file').addEventListener('change', function(e) {
