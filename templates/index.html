@@ -1244,6 +1244,10 @@
                     <i class="fas fa-upload"></i>
                     Test Railway POST
                 </button>
+                <button type="button" class="upload-btn" onclick="testFileUpload()" style="margin-top: 0.5rem; background: linear-gradient(45deg, #8b5cf6, #ec4899);">
+                    <i class="fas fa-file-upload"></i>
+                    Test File Upload
+                </button>
             </form>
             
             <div id="loading">
@@ -1643,6 +1647,43 @@
                 }
             } catch (error) {
                 result.innerHTML = `<p>❌ POST Network error: ${error.message}</p><p><small>POST requests are failing to reach Railway.</small></p>`;
+                result.className = 'error';
+            }
+        }
+
+        // Test file upload with a tiny text file
+        async function testFileUpload() {
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.className = 'success';
+            result.innerHTML = '<p>🔄 Testing Railway file upload with tiny text file...</p>';
+            
+            try {
+                // Create a tiny text file (much smaller than video)
+                const testFile = new File(['Hello Railway! This is a test file.'], 'test.txt', { type: 'text/plain' });
+                
+                const formData = new FormData();
+                formData.append('file', testFile);
+                
+                console.log('🧪 Testing file upload, file size:', testFile.size, 'bytes');
+                
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                
+                console.log('🧪 File upload response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `<p>❌ File upload worked but rejected (expected - not a video)</p><p><small>Error: ${data.error}</small></p>`;
+                    result.className = 'warning';
+                } else {
+                    result.innerHTML = `<p>❌ File upload failed with HTTP ${response.status}</p><p><small>This indicates Railway file upload limits.</small></p>`;
+                    result.className = 'error';
+                }
+            } catch (error) {
+                result.innerHTML = `<p>❌ File upload network error: ${error.message}</p><p><small>Railway is blocking file uploads completely.</small></p>`;
                 result.className = 'error';
             }
         }
