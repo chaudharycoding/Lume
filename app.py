@@ -51,11 +51,18 @@ def test_upload():
 @app.route('/upload', methods=['POST'])
 def upload_video():
     try:
+        print(f"🔍 Upload request received - Form keys: {list(request.files.keys())}")
+        print(f"🔍 Request form data: {dict(request.form)}")
+        
         if 'file' not in request.files:
+            print(f"❌ No 'file' key in request.files: {list(request.files.keys())}")
             return jsonify({'error': 'No file uploaded'}), 400
         
         file = request.files['file']
+        print(f"🔍 File object: {file}, filename: {file.filename}")
+        
         if file.filename == '':
+            print(f"❌ Empty filename")
             return jsonify({'error': 'No file selected'}), 400
         
         # Check file size (limit to 50MB for Railway)
@@ -66,8 +73,24 @@ def upload_video():
         if file_size > 25 * 1024 * 1024:  # 25MB limit for Railway stability
             return jsonify({'error': 'File too large. Please upload a video smaller than 25MB.'}), 400
         
-        if file and allowed_file(file.filename):
+        if file:
             filename = secure_filename(file.filename)
+            print(f"🔍 Secure filename: {filename}")
+            
+            # Special handling for test files
+            if filename == 'test.txt':
+                print(f"✅ Test file detected - Railway file uploads are working!")
+                return jsonify({
+                    'success': True,
+                    'message': 'Test file upload successful! Railway file uploads work.',
+                    'filename': filename,
+                    'size': file_size
+                })
+            
+            if not allowed_file(file.filename):
+                print(f"❌ File type not allowed: {filename}")
+                return jsonify({'error': f'Invalid file type. Only mp4, mov, avi files are allowed. Got: {filename}'}), 400
+            
             input_video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             
             # Save uploaded file

@@ -1676,10 +1676,16 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    result.innerHTML = `<p>❌ File upload worked but rejected (expected - not a video)</p><p><small>Error: ${data.error}</small></p>`;
-                    result.className = 'warning';
+                    if (data.success) {
+                        result.innerHTML = `<p>✅ Railway file uploads are working!</p><p><small>${data.message}</small></p>`;
+                        result.className = 'success';
+                    } else {
+                        result.innerHTML = `<p>❌ File upload worked but rejected (expected - not a video)</p><p><small>Error: ${data.error}</small></p>`;
+                        result.className = 'warning';
+                    }
                 } else {
-                    result.innerHTML = `<p>❌ File upload failed with HTTP ${response.status}</p><p><small>This indicates Railway file upload limits.</small></p>`;
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    result.innerHTML = `<p>❌ File upload failed with HTTP ${response.status}</p><p><small>Error: ${errorData.error || 'Railway file upload limits'}</small></p>`;
                     result.className = 'error';
                 }
             } catch (error) {
